@@ -20,6 +20,7 @@ public class LoveAppVectorStoreConfig {
     LoveAppDocumentLoader loveAppDocumentLoader;
 
     //要引入Spring AI的EmbeddingModel
+    //基于内存的向量存储（Vector Store）实现类
     @Bean
     VectorStore loveAppVectorStore(EmbeddingModel dashscopeEmbeddingModel){
         SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(dashscopeEmbeddingModel).build();

@@ -10,6 +10,7 @@ import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -74,6 +75,8 @@ public class LoveApp {
     @Resource
     VectorStore loveAppVectorStore;
     @Resource
+    VectorStore pgVectorVectorStore;
+    @Resource
     Advisor loveAppRagCloud;
     //RAG知识库
     public String doChatWithRag(String message,String chatId){
@@ -87,7 +90,9 @@ public class LoveApp {
                 //开启知识库问答功能
 //                .advisors(new QuestionAnswerAdvisor(loveAppVectorStore))
                 //应用RAG检索增强服务（基于云知识库服务）
-                .advisors( loveAppRagCloud)
+                .advisors(loveAppRagCloud)
+                //应用RAG检索增强服务（基于pgvector）
+                .advisors(new QuestionAnswerAdvisor(pgVectorVectorStore))
                 .call()
                 .chatResponse();
         String content = response.getResult().getOutput().getText();
