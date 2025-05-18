@@ -2,6 +2,7 @@ package com.zjq.aiagent.app;
 
 import com.zjq.aiagent.advisor.MyLoggerAdvisor;
 import com.zjq.aiagent.chatmemory.FileBasedChatMemory;
+import com.zjq.aiagent.rag.QueryRewriter;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,11 +79,14 @@ public class LoveApp {
     VectorStore pgVectorVectorStore;
     @Resource
     Advisor loveAppRagCloud;
+    @Resource
+    private QueryRewriter queryRewriter;
     //RAG知识库
     public String doChatWithRag(String message,String chatId){
+        String rewriteMessage = queryRewriter.doQueryRewrite(message);
         ChatResponse response = chatClient
                 .prompt()
-                .user(message)
+                .user(rewriteMessage)
                 .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
                 //开启日志，观察效果

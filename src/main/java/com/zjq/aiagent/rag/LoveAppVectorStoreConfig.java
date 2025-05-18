@@ -18,14 +18,27 @@ public class LoveAppVectorStoreConfig {
 
     @Resource
     LoveAppDocumentLoader loveAppDocumentLoader;
+    @Resource
+    MyKeywordEnricher myKeywordEnricher;
 
     //要引入Spring AI的EmbeddingModel
     //基于内存的向量存储（Vector Store）实现类
+//    @Bean
+//    VectorStore loveAppVectorStore(EmbeddingModel dashscopeEmbeddingModel){
+//        SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(dashscopeEmbeddingModel).build();
+//        List<Document> documentList = loveAppDocumentLoader.loadMarkDowns();
+//        simpleVectorStore.add(documentList);
+//        return simpleVectorStore;
+//    }
     @Bean
-    VectorStore loveAppVectorStore(EmbeddingModel dashscopeEmbeddingModel){
-        SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(dashscopeEmbeddingModel).build();
-        List<Document> documentList = loveAppDocumentLoader.loadMarkDowns();
-        simpleVectorStore.add(documentList);
+    VectorStore loveAppVectorStore(EmbeddingModel dashscopeEmbeddingModel) {
+        SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(dashscopeEmbeddingModel)
+                .build();
+        // 加载文档
+        List<Document> documents = loveAppDocumentLoader.loadMarkDowns();
+        // 自动补充关键词元信息
+        List<Document> enrichedDocuments = myKeywordEnricher.enrichDocuments(documents);
+        simpleVectorStore.add(enrichedDocuments);
         return simpleVectorStore;
     }
 }
