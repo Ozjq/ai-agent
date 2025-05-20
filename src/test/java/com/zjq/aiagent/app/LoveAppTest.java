@@ -68,11 +68,21 @@ class LoveAppTest {
         // 测试 PDF 生成
         testMessage("生成一份‘七夕约会计划’PDF，包含餐厅预订、活动流程和礼物清单");
     }
-
-    private void testMessage(String message) {
+    @Test
+    void testMessage(String message) {
         String chatId = UUID.randomUUID().toString();
         String answer = loveApp.doChatWithTools(message, chatId);
         Assertions.assertNotNull(answer);
     }
+
+    @Test
+    void doChatWithMcp() {
+        String chatId = UUID.randomUUID().toString();
+        // 测试图片搜索 MCP
+        String message = "帮我搜索一些哄另一半开心的图片";
+        String answer =  loveApp.doChatWithMcp(message, chatId);
+        Assertions.assertNotNull(answer);
+    }
+
 
 }
